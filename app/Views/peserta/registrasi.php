@@ -54,10 +54,12 @@
                                 <label class="form-label">Password</label>
                                 <input type="password" name="password"
                                     class="form-control <?= session('errors.password') ? 'is-invalid' : '' ?>">
-
                                 <div class="invalid-feedback">
                                     <?= session('errors.password') ?>
                                 </div>
+                                <p><span class="text-danger">*</span>Password minimal 8 karakter', harus mengandung
+                                    angka dan simbol'</p>
+
                             </div>
 
                             <div class="mb-3">

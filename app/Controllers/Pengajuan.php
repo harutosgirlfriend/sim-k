@@ -15,9 +15,42 @@ class Pengajuan extends BaseController
     }
     public function index()
     {
+        $keyword = $this->request->getGet('keyword');
+        $tanggal = $this->request->getGet('tanggal');
+        $bulan = $this->request->getGet('bulan');
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
 
+        $builder = $this->pengajuanModel;
 
-        $data['pengajuan'] = $this->pengajuanModel->findAll(); // kalau object: ->asObject()->findAll()
+        // SEARCH
+        if ($keyword) {
+            $builder->groupStart()
+                ->like('nama_pengaju', $keyword)
+                ->orLike('nik_pengaju', $keyword)
+                ->groupEnd();
+        }
+
+        // FILTER PER HARI
+        if ($tanggal) {
+            $builder->where('tanggal_kematian', $tanggal);
+        }
+
+        // FILTER PER BULAN
+        if ($bulan) {
+            $builder->where("DATE_FORMAT(tanggal_kematian, '%Y-%m') =", $bulan);
+        }
+
+        // FILTER RENTANG TANGGAL
+        if ($startDate && $endDate) {
+            $builder->where('tanggal_kematian >=', $startDate);
+            $builder->where('tanggal_kematian <=', $endDate);
+        }
+
+        // URUTKAN TERBARU
+        $builder->orderBy('created_at', 'DESC');
+
+        $data['pengajuan'] = $builder->findAll();
 
         return view('admin/pengajuan', $data);
     }
@@ -31,8 +64,9 @@ class Pengajuan extends BaseController
             'nik_terlapor' => 'required|numeric|exact_length[16]|is_unique[pengajuan.nik_terlapor]',
             'tanggal_kematian' => 'required',
             'foto_surat' => 'uploaded[foto_surat]|is_image[foto_surat]|max_size[foto_surat,2048]',
-            'file_surat' => 'uploaded[file_surat]|ext_in[file_surat,pdf,doc,docx]|max_size[file_surat,4096]',
-            'status' => 'pending'
+            'foto_ktp_kk' => 'uploaded[foto_ktp_kk]|is_image[foto_ktp_kk]|max_size[foto_ktp_kk,2048]',
+
+
         ];
 
         $messages = [
@@ -69,11 +103,12 @@ class Pengajuan extends BaseController
                 'is_image' => 'Harus berupa gambar',
                 'max_size' => 'Maks 2MB'
             ],
-            'file_surat' => [
-                'uploaded' => 'File wajib diupload',
-                'ext_in' => 'Harus PDF/DOC/DOCX',
-                'max_size' => 'Maks 4MB'
+            'foto_ktp_kk' => [
+                'uploaded' => 'Foto KTP/KK wajib diupload',
+                'is_image' => 'Harus berupa gambar',
+                'max_size' => 'Maks 2MB'
             ],
+
         ];
 
         if (!$this->validate($rules, $messages)) {
@@ -84,7 +119,7 @@ class Pengajuan extends BaseController
 
 
         $gambar = $this->request->getFile('foto_surat');
-        $file = $this->request->getFile('file_surat');
+        $gambarkk = $this->request->getFile('foto_ktp_kk');
 
         $nama = $this->request->getPost('nama_terlapor');
         $namaBersih = strtolower(preg_replace('/[^a-z0-9]/', '_', $nama));
@@ -94,8 +129,8 @@ class Pengajuan extends BaseController
         $gambar->move('uploads/gambar', $namaGambar);
 
 
-        $namaFile = $namaBersih . '_file_' . time() . '.' . $file->getExtension();
-        $file->move('uploads/file', $namaFile);
+        $namaGambarKK = $namaBersih . '_foto_ktp_kk' . time() . '.' . $gambarkk->getExtension();
+        $gambarkk->move('uploads/file', $namaGambarKK);
 
         $this->pengajuanModel->insert([
             'nama_pengaju' => $this->request->getPost('nama_pengaju'),
@@ -105,7 +140,8 @@ class Pengajuan extends BaseController
             'nik_terlapor' => $this->request->getPost('nik_terlapor'),
             'tanggal_kematian' => $this->request->getPost('tanggal_kematian'),
             'foto_surat' => $namaGambar,
-            'file_surat' => $namaFile,
+            'foto_ktp_kk' => $namaGambarKK,
+            'status' => 'pending',
             'email' => session()->get('email'),
         ]);
 
@@ -115,15 +151,26 @@ class Pengajuan extends BaseController
     public function setujui($id)
     {
         $this->pengajuanModel->update($id, [
-            'status' => 'Disetujui'
+            'status' => 'disetujui'
         ]);
         $email = \Config\Services::email();
         $email_peserta = $this->pengajuanModel->find($id);
 
 
         $email->setTo($email_peserta->email);
-        $email->setSubject('HIDUP JOKOWI');
-        $email->setMessage('diterima!');
+        $email->setSubject('STATUS PENGAJUAN SURAT KEMATIAN BPJS');
+        $email->setMessage('Pengajuan Surat Kematian Anda Telah Diterima
+
+Yth. Peserta BPJS Kesehatan,
+
+Terima kasih telah melakukan pengajuan surat kematian melalui SIM-K
+
+Dengan ini kami menginformasikan surat kematian yang telah Anda kirim BERHASIL dan diproses oleh petugas BPJS Kesehatan. seluruh data dan dokumen yang diajukan DINYATAKAN sesuai dengan ketentuan yang berlaku
+
+Demikian informasi ini disampaikan. Atas perhatian dan kerja samanya, kami ucapkan terima kasih.
+
+Hormat kami,
+Admin Sistem Informasi Manajemen Kematian (SIM-K)!');
 
         if (!$email->send()) {
             dd($email->printDebugger(['headers']));
@@ -135,18 +182,36 @@ class Pengajuan extends BaseController
     public function tolak($id)
     {
         $this->pengajuanModel->update($id, [
-            'status' => 'Ditolak'
+            'status' => 'ditolak'
         ]);
+        $email = \Config\Services::email();
+        $email_peserta = $this->pengajuanModel->find($id);
+
+
         $email->setTo($email_peserta->email);
-        $email->setSubject('HIDUP JOKOWI');
-        $email->setMessage('ditolak');
+        $email->setSubject('STATUS PENGAJUAN SURAT KEMATIAN BPJS');
+        $email->setMessage('Pengajuan Surat Kematian Anda Telah Diterima 
+
+Yth. Peserta BPJS Kesehatan,
+
+Terima kasih telah melakukan pengajuan surat kematian melalui Sistem Informasi Manajemen Kematian (SIM-K).
+
+Dengan ini kami menginformasikan bahwa pengajuan surat kematian yang telah Anda kirim DITOLAK.
+
+Peserta diharapkan untuk melakukan pengecekan kembali terhadap kelengkapan dan kesesuaian data yang telah diunggah. Apabila terdapat kesalahan atau kekurangan dokumen, peserta dapat melakukan pengajuan ulang sesuai dengan persyaratan yang berlaku pada sistem.
+
+Demikian informasi ini disampaikan. Atas perhatian dan kerja samanya, kami ucapkan terima kasih.
+
+Hormat kami,
+Admin Sistem Informasi Manajemen Kematian (SIM-K)');
 
         if (!$email->send()) {
             dd($email->printDebugger(['headers']));
         }
 
-
         return redirect()->back();
+
+
     }
     public function detail($nik)
     {
@@ -164,4 +229,17 @@ class Pengajuan extends BaseController
         }
         return $this->response->download($path, null);
     }
+
+
+    public function riwayat()
+{
+    $pengajuan = $this->pengajuanModel
+        ->where('email', session()->get('email'))
+        ->orderBy('created_at', 'DESC')
+        ->findAll();
+
+    return view('peserta/riwayat_pengajuan', [
+        'pengajuan' => $pengajuan
+    ]);
+}
 }

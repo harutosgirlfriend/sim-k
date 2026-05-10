@@ -1055,6 +1055,13 @@ p.section-title-white {
   overflow: hidden;
   margin-bottom: 50px;
 }
+#riwayat_pengajuan {
+  padding: 50px 20px;
+  position: relative;
+  padding: 60px 30px;
+  overflow: hidden;
+  margin-bottom: 50px;
+}
 
 /* SHAPE 1 (kanan bawah, beda dari hero) */
 #cara_pengajuan::before {
@@ -1090,6 +1097,17 @@ p.section-title-white {
   border-radius: 50%;
   opacity: 0.15;
 }
+#riwayat_pengajuan::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, #0d6efd, #6ea8fe);
+  border-radius: 50%;
+  opacity: 0.15;
+}
 
 /* SHAPE 2 (kiri atas, kecil & lembut) */
 #cara_pengajuan::after {
@@ -1115,6 +1133,17 @@ p.section-title-white {
   opacity: 0.2;
 }
 #pengajuan_surat::after {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, #20c997, #d1e7dd);
+  border-radius: 50%;
+  opacity: 0.2;
+}
+#riwayat_pengajuan::after {
   content: "";
   position: absolute;
   top: -80px;

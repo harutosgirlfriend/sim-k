@@ -8,26 +8,33 @@ use CodeIgniter\Filters\FilterInterface;
 
 class AuthFilter implements FilterInterface
 {
-    public function before(RequestInterface $request, $arguments = null)
+public function before(RequestInterface $request, $arguments = null)
     {
-         if (!session()->get('logged_in')) {
-        return redirect()->to('/');
+        // BELUM LOGIN
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/');
+        }
+
+        // AMBIL ROLE
+        $role = session()->get('role');
+
+        // CEK ROLE
+        if ($arguments) {
+
+            if (!in_array($role, $arguments)) {
+
+                return redirect()->to('/')
+                    ->with('error', 'Akses ditolak');
+            }
+        }
     }
 
-    $role = session()->get('role');
-
- 
-    if ($arguments === null) {
-        return;
-    }
-
-    if (!in_array($role, $arguments)) {
-        return redirect()->to('/');
-    }
-    }
-
-    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
-    {
+    public function after(
+        RequestInterface $request,
+        ResponseInterface $response,
+        $arguments = null
+    ) {
         //
     }
+
 }

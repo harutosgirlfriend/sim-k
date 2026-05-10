@@ -50,7 +50,7 @@
 							</div>
 						</div>
 
-						<!-- Plan & Billing Interval -->
+
 						<div class=" mb-3">
 
 							<label class="form-label small fw-semibold text-secondary">Nama Terlapor
@@ -102,12 +102,25 @@
 								</div>
 							</div>
 							<div class="col-md-6">
-								<label class="form-label small fw-semibold text-secondary">File Surat Kematian</label>
-								<input type="file"
-									class="form-control bg-light shadow-none <?= session('errors.file_surat') ? 'is-invalid' : '' ?>"
-									name="file_surat" required>
+								<label class="form-label small fw-semibold text-secondary">Foto KTP/KK</label>
+								<input type="file" id="input-filekk"
+									class="form-control bg-light shadow-none <?= session('errors.foto_ktp_kk') ? 'is-invalid' : '' ?>"
+									accept="image/*" onchange="previewKK(event)" name="foto_ktp_kk" required>
+								<div id="preview-wrapperkk" style="position:relative; display:none; margin-top:10px;">
+
+								
+									<button type="button" onclick="removePreviewKK()" id="hapus-ktp-kk"
+										style="position:absolute; top:5px; right:5px; color:black; border: none; background: none; width:50px;">
+										<h4>×</h4>
+									</button>
+
+									<!-- GAMBAR -->
+									<img id="preview-ktp-kk" style="max-width:30%; border-radius:10px;">
+
+								</div>
+
 								<div class="invalid-feedback">
-									<?= session('errors.file_surat') ?>
+									<?= session('errors.foto_ktp_kk') ?>
 								</div>
 							</div>
 						</div>
@@ -117,7 +130,7 @@
 							<label class="form-label small fw-semibold text-secondary">Tanggal Kematian</label>
 							<input type="date"
 								class="form-control bg-light shadow-none <?= session('errors.tanggal_kematian') ? 'is-invalid' : '' ?>"
-								name="tanggal_kematian" required  max="<?= date('Y-m-d') ?>">
+								name="tanggal_kematian" required max="<?= date('Y-m-d') ?>">
 							<div class="invalid-feedback">
 								<?= session('errors.tanggal_kematian') ?>
 							</div>
@@ -158,33 +171,61 @@
 		wrapper.style.display = 'none';
 		input.value = ""; // reset file input
 	}
+	function previewKK(event) {
+		const img = document.getElementById('preview-ktp-kk');
+		const wrapper = document.getElementById('preview-wrapperkk');
+		const file = event.target.files[0];
+
+		if (file) {
+			img.src = URL.createObjectURL(file);
+			wrapper.style.display = 'block';
+		}
+	}
+
+	function removePreviewKK() {
+		const img = document.getElementById('preview-ktp-kk');
+		const wrapper = document.getElementById('preview-wrapperkk');
+		const input = document.getElementById('input-filekk');
+
+		img.src = "";
+		wrapper.style.display = 'none';
+		input.value = ""; // reset file input
+	}
 
 	function resetForm() {
 		let form = document.getElementById("formPengajuan");
 		form.reset();
 
 
-		let preview = document.getElementById("preview-surat");
-		let fileInput = document.getElementById("input-file"); // sesuaikan id input file kamu
-		let icon = document.getElementById("hapus-surat"); // sesuaikan id icon silang
+		
+		let icon = document.getElementById("hapus-surat"); 
+		let iconktp = document.getElementById("hapus-ktp-kk"); 
+	let preview = document.getElementById("preview-surat");
+	let previewkk = document.getElementById("preview-ktp-kk");
 
-
-		if (preview) {
+		if (preview && previewkk) {
 
 			if (preview.src) {
-				URL.revokeObjectURL(preview.src); //“menghapus” object URL dari memori browser.
+				URL.revokeObjectURL(preview.src); 
+			}
+			if (previewkk.src) {
+				URL.revokeObjectURL(previewkk.src); 
 			}
 			preview.src = "";
 			preview.style.display = "none"; // biar hilang
+			previewkk.src = "";
+			previewkk.style.display = "none"; // biar hilang
 		}
 
 
-		if (fileInput) {
-			fileInput.value = "";
-		}
+		
 
 		if (icon) {
 			icon.style.display = "none";
+		}
+
+		if (iconktp) {
+			iconktp.style.display = "none";
 		}
 	}
 </script>

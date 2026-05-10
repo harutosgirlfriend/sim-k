@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\UserModel;
+use App\Models\PengajuanModel;
 class Home extends BaseController
 {
        protected $userModel;
@@ -14,7 +15,7 @@ class Home extends BaseController
     }
     public function index(): string
     {
-        return view('template/admin');
+        return view('admin/dashboard');
     }
     public function login(): string
     {
@@ -54,7 +55,13 @@ class Home extends BaseController
     }
     public function admin()
     {
-       
-        return view('template/admin');
+       $pengajuanModel = new PengajuanModel();
+
+        $data['pengajuan'] = $pengajuanModel
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        return view('admin/dashboard', $data);
+   
     }
 }

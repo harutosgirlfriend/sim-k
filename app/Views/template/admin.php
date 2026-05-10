@@ -5,13 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
-	<link rel="shortcut icon" type="image/png" href="<?= base_url('peserta/assets/images/banner/logo.png') ?>" />
-  <link rel="stylesheet" href="<?= base_url('admin/assets/css/styles.min.css') ?>"  />
+  <link rel="shortcut icon" type="image/png" href="<?= base_url('peserta/assets/images/banner/logo.png') ?>" />
+  <link rel="stylesheet" href="<?= base_url('admin/assets/css/styles.min.css') ?>" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
     body {
       margin: 0;
@@ -34,7 +35,8 @@
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
           <a href="./index.html" class="text-nowrap logo-img">
-            <h2 class=""> <img src="<?= base_url('peserta/assets/images/banner/logo.png') ?>" width="50px" alt=""> SIM-K</h2>
+            <h2 class=""> <img src="<?= base_url('peserta/assets/images/banner/logo.png') ?>" width="50px" alt=""> SIM-K
+            </h2>
 
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -49,13 +51,14 @@
               <span class="hide-menu">Home</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./index.html" aria-expanded="false">
+              <a class="sidebar-link" href="/admin/dashboard" aria-expanded="false">
                 <i class="ti ti-atom"></i>
                 <span class="hide-menu">Dashboard</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between <?= (strpos(uri_string(), 'admin/detail') !== false) ? 'text-primary' : '' ?>" href="/admin/pengajuan" aria-expanded="false">
+              <a class="sidebar-link justify-content-between <?= (strpos(uri_string(), 'admin/detail') !== false) ? 'text-primary' : '' ?>"
+                href="/admin/pengajuan" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <i class="ti ti-aperture"></i>
@@ -66,12 +69,12 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between" href="#" aria-expanded="false">
+              <a class="sidebar-link justify-content-between" href="/admin/tambahAdmin" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
-                    <i class="ti ti-shopping-cart"></i>
+                    <i class="ti ti-user"></i>
                   </span>
-                  <span class="hide-menu">eCommerce</span>
+                  <span class="hide-menu">Daftar Akun</span>
                 </div>
 
               </a>
@@ -136,7 +139,7 @@
                       <i class="ti ti-list-check fs-6"></i>
                       <p class="mb-0 fs-3">My Task</p>
                     </a>
-                    <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                    <a href="/logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>
                 </div>
               </li>
@@ -146,9 +149,20 @@
       </header>
       <!--  Header End -->
       <div class="body-wrapper-inner">
+
         <div class="container-fluid">
-         		<?= $this->renderSection('content') ?>
-   
+          <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+
+              <?= session()->getFlashdata('success') ?>
+
+              <button type="button" class="btn-close" data-bs-dismiss="alert">
+              </button>
+
+            </div>
+          <?php endif; ?>
+          <?= $this->renderSection('content') ?>
+
         </div>
       </div>
     </div>

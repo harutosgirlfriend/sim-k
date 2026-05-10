@@ -16843,3 +16843,12 @@ ul {
     background: #f8d7da;
     color: #721c24;
 }
+
+.table-wrapper {
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    border-radius: 12px;
+}
+
+/* header tetap di atas */

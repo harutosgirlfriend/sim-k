@@ -7,34 +7,30 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4 p-md-5">
 
-                <h5 class="mb-4 text-center ">Detail Pengajuan</h5>
-                    <?php
-                    $file = $p->file_surat;
-                    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                    ?>
+                <h3 class="mb-4 fw-bold text-center ">Detail Pengajuan</h3>
+                  
                 <form>
 
                     <!-- ROW 1 -->
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">NIK</label>
+                            <label class="form-label small fw-semibold">NIK Pengaju</label>
                             <input type="text" class="form-control bg-light shadow-none"
                                 value="<?= $p->nik_pengaju ?>" readonly>
                         </div>
-
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Nama</label>
+                            <label class="form-label small fw-semibold">Nama Pengaju</label>
                             <input type="text" class="form-control bg-light shadow-none"
                                 value="<?= $p->nama_pengaju ?>" readonly>
                         </div>
-                    </div>
 
-                    <!-- ROW 2 -->
+                    </div>
                     <div class="row mb-3">
+                       
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Tanggal Kematian</label>
+                            <label class="form-label small fw-semibold">Nama Terlapor</label>
                             <input type="text" class="form-control bg-light shadow-none"
-                                value="<?= $p->tanggal_kematian ?>" readonly>
+                                value="<?= $p->nama_terlapor ?>" readonly>
                         </div>
 
                         <div class="col-md-6">
@@ -42,74 +38,99 @@
                             <input type="text" class="form-control bg-light shadow-none"
                                 value="<?= $p->no_hp ?>" readonly>
                         </div>
+                    </div>
+
+                    <!-- ROW 2 -->
+                    <div class="row mb-3">
+               
+
+                               <div class="col-md-6">
+                            <label class="form-label small fw-semibold">NIK Terlapor</label>
+                            <input type="text" class="form-control bg-light shadow-none"
+                                value="<?= $p->nik_terlapor ?>" readonly>
+                        </div>
+
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">No HP</label>
+                            <label class="form-label small fw-semibold">Email</label>
                             <input type="text" class="form-control bg-light shadow-none"
                                 value="<?= $p->email ?>" readonly>
                         </div>
                     </div>
-
-                    <!-- STATUS -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Status</label>
+                    <div class="row mb-3">
+                          <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Tanggal Kematian</label>
+                            <input type="text" class="form-control bg-light shadow-none"
+                                value="  <?= date('d-M-Y', strtotime($p->tanggal_kematian)) ?>" readonly>
+                        </div>
+                          <div class="col-md-6">
+                           <label class="form-label small fw-semibold">Status</label>
                         <input type="text" class="form-control bg-light shadow-none"
                             value="<?= $p->status ?>" readonly>
+                        </div>
+
+                 
                     </div>
+
+                    <!-- STATUS -->
+                  
 
                     <hr>
 
-                    <h6 class="mb-3">Dokumen</h6>
+                    <h5 class="mb-3">Dokumen</h5>
 
-                    <!-- FOTO -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Foto Surat</label><br>
-                <img src="<?= base_url('uploads/gambar/' . $p->foto_surat) ?>"
-     class="img-thumbnail mt-2"
-     style="max-width: 200px; border-radius:10px; cursor:pointer;"
-     onclick="openImage(this.src)">
-                    </div>
+              
+         <div class="row mb-3">
 
-         <div class="mb-4">
-    <label class="form-label small fw-semibold">File Surat</label>
+    <!-- FOTO SURAT -->
+   <div class="col-md-6">
+        <label class="form-label small fw-semibold d-block">
+            Foto Surat
+        </label>
 
-    <div class="mt-2">
+        <img src="<?= base_url('uploads/gambar/' . $p->foto_surat) ?>"
+            class="img-thumbnail mt-2"
+            style="max-width: 200px; border-radius:10px; cursor:pointer;"
+            onclick="openImage(this.src)">
 
-        <?php if ($ext == 'pdf'): ?>
-            <iframe 
-                src="<?= base_url('uploads/surat/' . $file) ?>" 
-                width="100%" 
-                height="500px"
-                style="border-radius:10px;">
-            </iframe>
 
-        <?php elseif (in_array($ext, ['jpg','jpeg','png'])): ?>
-            <img src="<?= base_url('uploads/surat/' . $file) ?>"
-                 class="img-fluid rounded"
-                 style="max-height:400px; cursor:pointer;"
-                 onclick="openImage(this.src)">
+        <div class="mt-2">
+            <a href="<?= base_url('uploads/gambar/' . $p->foto_surat) ?>"
+                download
+                class="btn btn-success btn-sm">
 
-        <?php else: ?>
-            <p class="text-muted">Preview tidak tersedia</p>
-        <?php endif; ?>
-
+                <i class="bi bi-download"></i> Download
+            </a>
+        </div>
     </div>
 
-    <div class="mt-3">
-        <a href="<?= base_url('uploads/surat/' . $file) ?>"
-            target="_blank"
-            class="btn btn-primary btn-sm">
-            Lihat File
-        </a>
+    <!-- FOTO KTP/KK -->
+   <div class="col-md-6">
+        <label class="form-label small fw-semibold d-block">
+            FOTO KTP/KK
+        </label>
 
-    <a href="<?= base_url('admin/download/' . $p->file_surat) ?>"
-   class="btn btn-success btn-sm">
-   Download File
-</a>
+        <img src="<?= base_url('uploads/file/' . $p->foto_ktp_kk) ?>"
+            class="img-thumbnail mt-2"
+            style="max-width: 200px; border-radius:10px; cursor:pointer;"
+            onclick="openImage(this.src)">
+
+
+        <div class="mt-2">
+            <a href="<?= base_url('uploads/file/' . $p->foto_ktp_kk) ?>"
+                download
+                class="btn btn-success btn-sm">
+
+                <i class="bi bi-download"></i> Download
+            </a>
+        </div>
     </div>
+
 </div>
+
+
                     <!-- BUTTON -->
                     <div class="d-flex justify-content-end">
-                        <a href="<?= base_url('') ?>"
+                        <a href="<?= base_url('/admin/pengajuan') ?>"
                             class="btn btn-secondary px-4 py-2 fw-bold text-uppercase shadow-sm">
                             Kembali
                         </a>

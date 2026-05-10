@@ -81,14 +81,15 @@
 								</li>
 								<li><a href="<?= base_url('peserta/menu/cara_pengajuan') ?>">Cara Pengajuan</a></li>
 								<li><a href="<?= base_url('peserta/pengajuan') ?>">Pengajuan</a></li>
-								<li><a href="#">Riwayat Pengajuan</a></li>
+								<li><a href="<?= base_url('peserta/riwayat') ?>">Riwayat Pengajuan</a></li>
 							</ul>
 						</nav>
 
 						<!-- KANAN: LOGIN -->
 						<div class="nav-login">
 							<?php if (session()->get('logged_in')): ?>
-								<a href="<?= base_url('/logout') ?>" class="fw-bold"> <i class="bi bi-box-arrow-right"></i> Logout</a>
+								<a href="<?= base_url('/logout') ?>" class="fw-bold"> <i class="bi bi-box-arrow-right"></i>
+									Logout</a>
 							<?php else: ?>
 								<a href="<?= base_url('/') ?>" class="fw-bold">
 									<i class="fa fa-user"></i> Login
@@ -104,7 +105,8 @@
 						<li><a href="<?= base_url('/peserta/menu/tentang_pengajuan') ?>">Tentang Pengajuan</a></li>
 						<li><a href="<?= base_url('/peserta/menu/cara_pengajuan') ?>">Cara Pengajuan</a></li>
 						<li><a href="/peserta/pengajuan">Pengajuan</a></li>
-						<li><a href="contact.html">Riwayat Pengajuan</a></li>
+
+						<li><a href="<?= base_url('peserta/riwayat') ?>">Riwayat Pengajuan</a></li>
 
 						<?php if (session()->get('logged_in')): ?>
 							<li><a href="<?= base_url('/logout') ?>">Logout</a></li>
@@ -123,7 +125,16 @@
 
 
 		<section class="px-3">
+			<?php if (session()->getFlashdata('success')): ?>
+				<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
 
+					<?= session()->getFlashdata('success') ?>
+
+					<button type="button" class="btn-close" data-bs-dismiss="alert">
+					</button>
+
+				</div>
+			<?php endif; ?>
 
 			<?= $this->renderSection('content') ?>
 			<footer class="footer section-padding mt-5"

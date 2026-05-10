@@ -39,7 +39,7 @@ class Auth extends BaseController
 
         $model = new UserModel();
 
-  
+
         $user = $model->where('email', $this->request->getPost('email'))
             ->asObject()
             ->first();
@@ -64,9 +64,9 @@ class Auth extends BaseController
             'logged_in' => true
         ]);
 
-     
+
         if ($user->role == 'admin') {
-            return redirect()->to('/admin/index'); 
+            return redirect()->to('/admin/dashboard');
         } else {
             return redirect()->to('/peserta/index');
         }
@@ -87,9 +87,13 @@ class Auth extends BaseController
         $rules = [
             'nama' => 'required|min_length[3]',
             'email' => 'required|valid_email|is_unique[users.email]',
-            'password' => 'required|min_length[6]',
+
+            'password' => [
+                'rules' => 'required|min_length[8]|regex_match[/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\W_]).+$/]'
+            ],
             'confirm_password' => 'required|matches[password]'
         ];
+
 
         $messages = [
             'nama' => [
@@ -103,7 +107,8 @@ class Auth extends BaseController
             ],
             'password' => [
                 'required' => 'Password wajib diisi',
-                'min_length' => 'Password minimal 6 karakter'
+                'min_length' => 'Password minimal 8 karakter',
+                'regex_match' => 'Password harus mengandung huruf, angka, dan simbol'
             ],
             'confirm_password' => [
                 'required' => 'Konfirmasi password wajib diisi',
@@ -129,5 +134,68 @@ class Auth extends BaseController
         $model->insert($data);
 
         return redirect()->to('/')->with('success', 'Registrasi berhasil, silakan login');
+    }
+
+
+
+     public function tambahAdmin()
+    {
+        return view('admin/tambah_admin');
+    }
+
+    public function simpanAdmin()
+    {
+
+     $rules = [
+            'nama' => 'required|min_length[3]',
+            'email' => 'required|valid_email|is_unique[users.email]',
+
+            'password' => [
+                'rules' => 'required|min_length[8]|regex_match[/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\W_]).+$/]'
+            ],
+            'confirm_password' => 'required|matches[password]'
+        ];
+
+
+        $messages = [
+            'nama' => [
+                'required' => 'Nama wajib diisi',
+                'min_length' => 'Nama minimal 3 karakter'
+            ],
+            'email' => [
+                'required' => 'Email wajib diisi',
+                'valid_email' => 'Format email tidak valid',
+                'is_unique' => 'Email sudah terdaftar'
+            ],
+            'password' => [
+                'required' => 'Password wajib diisi',
+                'min_length' => 'Password minimal 8 karakter',
+                'regex_match' => 'Password harus mengandung huruf, angka, dan simbol'
+            ],
+            'confirm_password' => [
+                'required' => 'Konfirmasi password wajib diisi',
+                'matches' => 'Password tidak sama'
+            ]
+        ];
+
+        if (!$this->validate($rules, $messages)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $model = new UserModel();
+
+        $data = [
+            'nama' => $this->request->getPost('nama'),
+            'email' => $this->request->getPost('email'),
+            'role' => 'admin',
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT)
+        ];
+
+        $model->insert($data);
+
+        return redirect()->to('/admin/tambahAdmin')
+            ->with('success', 'Akun admin berhasil ditambahkan');
     }
 }

@@ -10,7 +10,7 @@ class PengajuanModel extends Model
     protected $primaryKey       = 'nik_terlapor';
     // protected $useSoftDeletes   = true;
 
-    protected $allowedFields    = ['nik_terlapor', 'nama_pengaju', 'nik_pengaju', 'nik_terlapor','no_hp','nama_terlapor','tanggal_kematian','foto_surat','file_surat','status','email'];
+    protected $allowedFields    = ['nik_terlapor', 'nama_pengaju', 'nik_pengaju', 'nik_terlapor','no_hp','nama_terlapor','tanggal_kematian','foto_surat','foto_ktp_kk','status','email'];
     
     protected $returnType = 'object';
     protected $useTimestamps = true;

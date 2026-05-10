@@ -66,8 +66,8 @@
 								<li><a href="<?= base_url('peserta/menu/tentang_pengajuan') ?>">Tentang Pengajuan</a>
 								</li>
 								<li><a href="<?= base_url('peserta/menu/cara_pengajuan') ?>">Cara Pengajuan</a></li>
-								<li><a href="<?= base_url('peserta/pengajuan') ?>">Pengajuan</a></li>
-								<li><a href="#">Riwayat Pengajuan</a></li>
+								<li><a href="<?= base_url('peserta/pengajuan') ?>">Pengajuan</a></li>	
+								<li><a href="<?= base_url('/peserta/riwayat') ?>">Riwayat Pengajuan</a></li>
 							</ul>
 						</nav>
 
